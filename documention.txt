@@ -1,0 +1,93 @@
+4 Easy to How to host your Laravel Project on Cpanel Share Hosting?
+
+
+1. First check your server php version to your laravel project php version is same or not?
+
+2. Zip your entire Laravel project and export your DB to sql
+3. Login to cPanel and navigate to File Manager
+4. Ensure you're in the root folder, then click "Upload"
+5. Select your zip file and wait for upload to complete
+6. Unzip the uploaded file
+7. Go back to Cpanel and navigate to Databases
+8. Created a database and add (create if non exist) a DB user
+9. Click on your fresh DB, and click "Import"
+10. Select your exported SQL file
+
+
+
+
+#First Way: 
+Create .htaccess file on your domain root dir
+
+and then add this code  -> 
+#this code rewire your laravel public folder
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+
+
+#Second Way: 
+Change server.php file to index.php
+and then copy public/.htaccess file to domain root dir
+Or Create .htaccess file on your domain root dir and Add this code .
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+
+    #Hide a specific file
+    <Files .env>
+        Order allow,deny
+        Deny from all
+    </Files>
+
+</IfModule>
+
+
+#Third way: 
+Change your domain root path like this: public_html/public
+How: Go to your subdomains list then change this root path
+
+
+#Fourth Way: 
+Move all public folder files to domain root dir and then create a folder for move all app files
+Create a new directory named public_html/myapp on your host.
+
+Inside your Laravel project you have a public directory. Copy the content of that public directory into the public_html/myapp directory you created on your host.
+
+On the same level with public_html folder (not inside it!), create a new directory named myapp-laravel on your host.
+
+Excepting the public folder, copy every folder and file (ex. app folder, .env file, ...) from your Laravel project into the myapp-laravel folder on your host.
+
+Edit the public_html/myapp/index.php file like this:
+
+Change require
+__ DIR__.'/../vendor/autoload.php';
+to 
+require __DIR__.'/appMain/vendor/autoload.php';
+Change
+require_once __ DIR__.'/../bootstrap/app.php';
+to
+$app = require_once __DIR__.'/appMain/bootstrap/app.php';
+
+
